@@ -62,13 +62,23 @@
                             Entrar
                         </button>
 
-                        @if (Route::has('password.request'))
-                            <div class="text-center mt-3">
-                                <a href="{{ route('password.request') }}" class="text-sm text-teal-600 hover:underline">
-                                    Esqueceu sua senha?
-                                </a>
-                            </div>
-                        @endif
+                        <div class="text-center mt-3 space-y-2">
+                            @if (Route::has('password.request'))
+                                <div>
+                                    <a href="{{ route('password.request') }}" class="text-sm text-teal-600 hover:underline">
+                                        Esqueceu sua senha?
+                                    </a>
+                                </div>
+                            @endif
+                            @if (Route::has('register'))
+                                <div>
+                                    <span class="text-sm text-gray-500">Não tem uma conta?</span>
+                                    <a href="{{ route('register') }}" class="text-sm text-teal-600 font-semibold hover:underline">
+                                        Criar conta
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
                     </form>
                 </div>
             </div>
