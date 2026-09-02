@@ -12,16 +12,15 @@
         </div>
     </div>
 
-        {{-- Stat cards --}}
     <div class="grid grid-cols-1 gap-4 mb-6 md:grid-cols-2 xl:grid-cols-4">
-            @php
-                $statCards = [
-                    ['label' => 'Clientes', 'sub' => 'Cadastrados', 'value' => $clientesCount ?? 0, 'icon' => 'user', 'bg' => 'bg-blue-50', 'iconBg' => 'bg-blue-500'],
-                    ['label' => 'Agendamentos', 'sub' => 'Hoje', 'value' => $agendamentosHoje ?? 0, 'icon' => 'calendar', 'bg' => 'bg-blue-50', 'iconBg' => 'bg-blue-500'],
-                    ['label' => 'Atendimentos', 'sub' => 'Em andamento', 'value' => $atendimentosAndamento ?? 0, 'icon' => 'clipboard-list', 'bg' => 'bg-amber-50', 'iconBg' => 'bg-amber-500'],
-                    ['label' => 'Concluídos', 'sub' => 'Hoje', 'value' => $concluido ?? 0, 'icon' => 'check-circle-2', 'bg' => 'bg-emerald-50', 'iconBg' => 'bg-emerald-500'],
-                ];
-            @endphp
+        @php
+            $statCards = [
+                ['label' => 'Clientes', 'sub' => 'Cadastrados', 'value' => $clientesCount ?? 0, 'icon' => 'user', 'bg' => 'bg-blue-50', 'iconBg' => 'bg-blue-500'],
+                ['label' => 'Agendamentos', 'sub' => 'Hoje', 'value' => $agendamentosHoje ?? 0, 'icon' => 'calendar', 'bg' => 'bg-blue-50', 'iconBg' => 'bg-blue-500'],
+                ['label' => 'Atendimentos', 'sub' => 'Em andamento', 'value' => $atendimentosAndamento ?? 0, 'icon' => 'clipboard-list', 'bg' => 'bg-amber-50', 'iconBg' => 'bg-amber-500'],
+                ['label' => 'Concluídos', 'sub' => 'Hoje', 'value' => $concluido ?? 0, 'icon' => 'check-circle-2', 'bg' => 'bg-emerald-50', 'iconBg' => 'bg-emerald-500'],
+            ];
+        @endphp
 
         @foreach ($statCards as $card)
             <div class="rounded-2xl p-4 shadow-sm ring-1 ring-slate-100 {{ $card['bg'] }}">
@@ -37,7 +36,6 @@
         @endforeach
     </div>
 
-        {{-- Bottom grid --}}
     <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-sm">
             <h2 class="mb-4 font-medium text-slate-900">Próximos agendamentos</h2>
