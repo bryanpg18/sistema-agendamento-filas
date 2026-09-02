@@ -3,6 +3,32 @@
 @section('titulo', 'Novo Cliente')
 
 @section('conteudo')
+    @php
+        $formatCpf = function (?string $value): string {
+            $digits = preg_replace('/\D+/', '', $value ?? '') ?? '';
+
+            if (strlen($digits) !== 11) {
+                return $value ?? '';
+            }
+
+            return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $digits) ?? $digits;
+        };
+
+        $formatTelefone = function (?string $value): string {
+            $digits = preg_replace('/\D+/', '', $value ?? '') ?? '';
+
+            if (strlen($digits) === 11) {
+                return preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $digits) ?? $digits;
+            }
+
+            if (strlen($digits) === 10) {
+                return preg_replace('/(\d{2})(\d{4})(\d{4})/', '($1) $2-$3', $digits) ?? $digits;
+            }
+
+            return $value ?? '';
+        };
+    @endphp
+
     <div class="mb-6">
         <p class="text-sm text-gray-400">
             <a href="{{ route('clientes.index') }}" class="hover:underline">Clientes</a> &gt; Novo Cliente
@@ -27,16 +53,18 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm text-gray-600 mb-1">CPF</label>
-                    <input type="text" name="cpf" value="{{ old('cpf') }}"
+                      <input type="text" name="cpf" value="{{ $formatCpf(old('cpf')) }}"
+                          x-data x-mask="999.999.999-99"
                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700"
                            placeholder="000.000.000-00">
                     @error('cpf') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
                 <div>
                     <label class="block text-sm text-gray-600 mb-1">Telefone</label>
-                    <input type="text" name="telefone" value="{{ old('telefone') }}"
+                      <input type="text" name="telefone" value="{{ $formatTelefone(old('telefone')) }}"
+                          x-data x-mask="(99) 99999-9999"
                            class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700"
-                           placeholder="(00) 0000-0000">
+                           placeholder="(00) 00000-0000">
                     @error('telefone') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
             </div>
