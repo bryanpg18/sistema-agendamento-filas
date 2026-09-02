@@ -1,19 +1,17 @@
-@extends('layouts.app')
+﻿@extends('layouts.painel')
 
 @section('titulo', 'Clientes')
 
-@section('conteudo')
-    <div class="flex items-center justify-between mb-6">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Clientes</h1>
-            <p class="text-sm text-gray-500">Gerencie os clientes cadastrados</p>
-        </div>
-        <a href="{{ route('clientes.create') }}"
-           class="bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 rounded-lg text-sm font-medium">
-            + Novo Cliente
-        </a>
-    </div>
+@section('titulo_pagina', 'Clientes')
 
+@section('cabecalho_acoes')
+    <a href="{{ route('clientes.create') }}"
+       class="bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 rounded-lg text-sm font-medium">
+        + Novo Cliente
+    </a>
+@endsection
+
+@section('conteudo')
     <form method="GET" class="mb-4">
         <input type="text" name="busca" value="{{ request('busca') }}"
                placeholder="Buscar por nome ou CPF..."
@@ -28,6 +26,8 @@
                     <th class="px-4 py-3 font-medium">CPF</th>
                     <th class="px-4 py-3 font-medium">Telefone</th>
                     <th class="px-4 py-3 font-medium">E-mail</th>
+                    <th class="px-4 py-3 font-medium">Data de nascimento</th>
+                    <th class="px-4 py-3 font-medium">Observações</th>
                     <th class="px-4 py-3 font-medium">Ações</th>
                 </tr>
             </thead>
@@ -38,6 +38,12 @@
                         <td class="px-4 py-3 text-gray-600">{{ $cliente->cpf }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $cliente->telefone }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $cliente->email ?? '-' }}</td>
+                        <td class="px-4 py-3 text-gray-600">
+                            {{ $cliente->data_nascimento ? \Carbon\Carbon::parse($cliente->data_nascimento)->format('d/m/Y') : '-' }}
+                        </td>
+                        <td class="px-4 py-3 text-gray-600 max-w-xs truncate" title="{{ $cliente->observacoes }}">
+                            {{ $cliente->observacoes ?? '-' }}
+                        </td>
                         <td class="px-4 py-3">
                             <a href="{{ route('clientes.edit', $cliente) }}" class="text-teal-700 hover:underline mr-3">Editar</a>
                             <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="inline"
@@ -50,7 +56,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="5" class="px-4 py-8 text-center text-gray-400">Nenhum cliente cadastrado ainda.</td>
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-400">Nenhum cliente cadastrado ainda.</td>
                     </tr>
                 @endforelse
             </tbody>
