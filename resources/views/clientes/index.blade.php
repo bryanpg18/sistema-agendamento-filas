@@ -1,62 +1,71 @@
-@extends('layouts.painel')
+@extends('layouts.app')
 
 @section('titulo', 'Clientes')
 
-@section('titulo_pagina', 'Clientes')
-
-@section('cabecalho_acoes')
-    <a href="{{ route('clientes.create') }}"
-       class="bg-teal-800 hover:bg-teal-900 text-white px-4 py-2 rounded-lg text-sm font-medium">
-        + Novo Cliente
-    </a>
-@endsection
-
 @section('conteudo')
+<div x-data="{ busca: '{{ request('busca') }}' }">
+    <div class="flex items-start justify-between mb-6">
+        <div>
+            <h1 class="text-2xl font-semibold text-slate-900">Clientes</h1>
+            <p class="text-sm text-slate-500">Gerencie os clientes cadastrados</p>
+        </div>
+        <a href="{{ route('clientes.create') }}"
+           class="rounded-lg bg-teal-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-800">
+            + Novo Cliente
+        </a>
+    </div>
+
     <form method="GET" class="mb-4">
-        <input type="text" name="busca" value="{{ request('busca') }}"
-               placeholder="Buscar por nome ou CPF..."
-               class="w-full max-w-sm border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700">
+        <input
+            type="text"
+            name="busca"
+            value="{{ request('busca') }}"
+            placeholder="Buscar por nome ou CPF..."
+            class="w-72 rounded-lg border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200"
+        >
     </form>
 
-    <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div class="overflow-hidden rounded-xl border border-slate-100 bg-white">
         <table class="w-full text-sm">
-            <thead class="bg-gray-50 text-gray-500 text-left">
-                <tr>
-                    <th class="px-4 py-3 font-medium">Nome</th>
-                    <th class="px-4 py-3 font-medium">CPF</th>
-                    <th class="px-4 py-3 font-medium">Telefone</th>
-                    <th class="px-4 py-3 font-medium">E-mail</th>
-                    <th class="px-4 py-3 font-medium">Data de nascimento</th>
-                    <th class="px-4 py-3 font-medium">Observações</th>
-                    <th class="px-4 py-3 font-medium">Ações</th>
+            <thead>
+                <tr class="border-b border-slate-100 bg-slate-50 text-left text-slate-500">
+                    <th class="px-5 py-3 font-medium">Nome</th>
+                    <th class="px-5 py-3 font-medium">CPF</th>
+                    <th class="px-5 py-3 font-medium">Telefone</th>
+                    <th class="px-5 py-3 font-medium">E-mail</th>
+                    <th class="px-5 py-3 font-medium">Data de nascimento</th>
+                    <th class="px-5 py-3 font-medium">Observações</th>
+                    <th class="px-5 py-3 font-medium">Ações</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
+            <tbody>
                 @forelse ($clientes as $cliente)
-                    <tr>
-                        <td class="px-4 py-3 text-gray-800">{{ $cliente->nome_completo }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $cliente->cpf_formatado }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $cliente->telefone_formatado }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $cliente->email ?? '-' }}</td>
-                        <td class="px-4 py-3 text-gray-600">
+                    <tr class="border-b border-slate-50 last:border-0">
+                        <td class="px-5 py-3 text-slate-700">{{ $cliente->nome_completo }}</td>
+                        <td class="px-5 py-3 text-slate-500">{{ $cliente->cpf_formatado }}</td>
+                        <td class="px-5 py-3 text-slate-500">{{ $cliente->telefone_formatado }}</td>
+                        <td class="px-5 py-3 text-slate-500">{{ $cliente->email ?? '-' }}</td>
+                        <td class="px-5 py-3 text-slate-500">
                             {{ $cliente->data_nascimento?->format('d/m/Y') ?? '-' }}
                         </td>
-                        <td class="px-4 py-3 text-gray-600 max-w-xs truncate" title="{{ $cliente->observacoes }}">
+                        <td class="px-5 py-3 text-slate-500 max-w-xs truncate" title="{{ $cliente->observacoes }}">
                             {{ $cliente->observacoes ?? '-' }}
                         </td>
-                        <td class="px-4 py-3">
-                            <a href="{{ route('clientes.edit', $cliente) }}" class="text-teal-700 hover:underline mr-3">Editar</a>
+                        <td class="px-5 py-3">
+                            <a href="{{ route('clientes.edit', $cliente) }}" class="mr-3 text-teal-700 hover:underline">Editar</a>
                             <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="inline"
                                   onsubmit="return confirm('Remover este cliente?')">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:underline">Excluir</button>
+                                <button type="submit" class="text-red-500 hover:underline">Remover</button>
                             </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-4 py-8 text-center text-gray-400">Nenhum cliente cadastrado ainda.</td>
+                        <td colspan="7" class="px-5 py-10 text-center text-slate-400">
+                            Nenhum cliente cadastrado ainda.
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
@@ -66,4 +75,5 @@
     <div class="mt-4">
         {{ $clientes->links() }}
     </div>
+</div>
 @endsection
