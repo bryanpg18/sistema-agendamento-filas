@@ -1,4 +1,4 @@
-﻿@extends('layouts.painel')
+@extends('layouts.painel')
 
 @section('titulo', 'Clientes')
 
@@ -35,11 +35,11 @@
                 @forelse ($clientes as $cliente)
                     <tr>
                         <td class="px-4 py-3 text-gray-800">{{ $cliente->nome_completo }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $cliente->cpf }}</td>
-                        <td class="px-4 py-3 text-gray-600">{{ $cliente->telefone }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ $cliente->cpf_formatado }}</td>
+                        <td class="px-4 py-3 text-gray-600">{{ $cliente->telefone_formatado }}</td>
                         <td class="px-4 py-3 text-gray-600">{{ $cliente->email ?? '-' }}</td>
                         <td class="px-4 py-3 text-gray-600">
-                            {{ $cliente->data_nascimento ? \Carbon\Carbon::parse($cliente->data_nascimento)->format('d/m/Y') : '-' }}
+                            {{ $cliente->data_nascimento?->format('d/m/Y') ?? '-' }}
                         </td>
                         <td class="px-4 py-3 text-gray-600 max-w-xs truncate" title="{{ $cliente->observacoes }}">
                             {{ $cliente->observacoes ?? '-' }}
