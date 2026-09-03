@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,7 +15,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('clientes', ClienteController::class);
 
     Route::view('/agendamentos', 'agendamentos.index')->name('agendamentos.index');
-    Route::view('/horarios', 'horarios.index')->name('horarios.index');
+    Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
     Route::view('/atendimentos', 'atendimentos.index')->name('atendimentos.index');
     Route::view('/historico', 'historico.index')->name('historico.index');
     Route::view('/relatorios', 'relatorios.index')->name('relatorios.index');
