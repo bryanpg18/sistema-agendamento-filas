@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AtendimentoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -15,7 +16,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::view('/agendamentos', 'agendamentos.index')->name('agendamentos.index');
     Route::view('/horarios', 'horarios.index')->name('horarios.index');
-    Route::view('/atendimentos', 'atendimentos.index')->name('atendimentos.index');
+    Route::get('/atendimentos', [AtendimentoController::class, 'index'])->name('atendimentos.index');
+    Route::patch('/atendimentos/{agendamento}/iniciar', [AtendimentoController::class, 'iniciar'])->name('atendimentos.iniciar');
+    Route::patch('/atendimentos/{agendamento}/finalizar', [AtendimentoController::class, 'finalizar'])->name('atendimentos.finalizar');
     Route::view('/historico', 'historico.index')->name('historico.index');
     Route::view('/relatorios', 'relatorios.index')->name('relatorios.index');
     Route::view('/configuracoes', 'configuracoes.index')->name('configuracoes.index');
