@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgendamentoController;
 use App\Http\Controllers\AtendimentoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\DashboardController;
@@ -16,7 +17,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('clientes', ClienteController::class);
 
-    Route::view('/agendamentos', 'agendamentos.index')->name('agendamentos.index');
+    // Agendamentos
+    Route::get('/agendamentos/horarios-disponiveis', [AgendamentoController::class, 'horariosDisponiveis'])->name('agendamentos.horarios-disponiveis');
+    Route::patch('/agendamentos/{agendamento}/cancelar', [AgendamentoController::class, 'cancelar'])->name('agendamentos.cancelar');
+    Route::resource('agendamentos', AgendamentoController::class)->except(['show', 'destroy']);
 
     // Horários
     Route::get('/horarios', [HorarioController::class, 'index'])->name('horarios.index');
