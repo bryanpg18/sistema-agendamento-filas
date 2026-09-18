@@ -29,23 +29,23 @@
          }"
          x-init="buscarHorarios()">
         <div class="mb-6">
-            <p class="text-sm text-gray-400">
+            <p class="text-sm text-slate-400 dark:text-slate-500">
                 <a href="{{ route('agendamentos.index') }}" class="hover:underline">Agendamentos</a> &gt; Novo
             </p>
-            <h1 class="text-2xl font-bold text-gray-800 mt-1">Novo Agendamento</h1>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white mt-1">Novo Agendamento</h1>
         </div>
 
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 class="font-semibold text-gray-700 mb-4">Dados do agendamento</h2>
+        <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200/80 dark:border-slate-800 p-6 shadow-sm transition-colors">
+            <h2 class="font-semibold text-slate-700 dark:text-slate-200 mb-4">Dados do agendamento</h2>
 
             <form method="POST" action="{{ route('agendamentos.store') }}" class="space-y-4">
                 @csrf
 
                 <div>
-                    <label class="block text-sm text-gray-600 mb-1">Cliente</label>
+                    <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">Cliente</label>
                     <div class="relative">
                         <select name="cliente_id"
-                                class="w-full appearance-none border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700">
+                                class="w-full appearance-none border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
                             <option value="">Selecione o cliente</option>
                             @foreach ($clientes as $cliente)
                                 <option value="{{ $cliente->id }}" @selected(old('cliente_id') == $cliente->id)>
@@ -53,18 +53,18 @@
                                 </option>
                             @endforeach
                         </select>
-                        <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </div>
-                    @error('cliente_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                    @error('cliente_id') <p class="text-rose-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
-                    <label class="block text-sm text-gray-600 mb-1">Serviço</label>
+                    <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">Serviço</label>
                     <div class="relative">
                         <select name="servico_id"
-                                class="w-full appearance-none border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700">
+                                class="w-full appearance-none border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
                             <option value="">Selecione o serviço</option>
                             @foreach ($servicos as $servico)
                                 <option value="{{ $servico->id }}" @selected(old('servico_id') == $servico->id)>
@@ -72,26 +72,26 @@
                                 </option>
                             @endforeach
                         </select>
-                        <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </div>
-                    @error('servico_id') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                    @error('servico_id') <p class="text-rose-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm text-gray-600 mb-1">Data</label>
+                        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">Data</label>
                         <input type="date" name="data" x-model="data" @change="buscarHorarios()"
                                min="{{ now()->toDateString() }}"
-                               class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700">
-                        @error('data') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                               class="w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
+                        @error('data') <p class="text-rose-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                     <div>
-                        <label class="block text-sm text-gray-600 mb-1">Horário</label>
+                        <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">Horário</label>
                         <div class="relative">
                             <select name="horario" :disabled="! data || carregando"
-                                    class="w-full appearance-none border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700 disabled:bg-gray-50 disabled:text-gray-400">
+                                    class="w-full appearance-none border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-500">
                                 <template x-if="! data">
                                     <option value="">Selecione a data primeiro</option>
                                 </template>
@@ -108,29 +108,29 @@
                                     <option :value="hora" x-text="hora" :selected="hora === '{{ old('horario') }}'"></option>
                                 </template>
                             </select>
-                            <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                             </svg>
                         </div>
-                        @error('horario') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                        @error('horario') <p class="text-rose-600 text-xs mt-1">{{ $message }}</p> @enderror
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-sm text-gray-600 mb-1">Observações</label>
+                    <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">Observações</label>
                     <textarea name="observacoes" rows="3"
-                              class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-700"
+                              class="w-full border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600"
                               placeholder="Informações adicionais (opcional)">{{ old('observacoes') }}</textarea>
-                    @error('observacoes') <p class="text-red-600 text-xs mt-1">{{ $message }}</p> @enderror
+                    @error('observacoes') <p class="text-rose-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
                 <div class="flex justify-end gap-3 pt-2">
                     <a href="{{ route('agendamentos.index') }}"
-                       class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 border border-gray-200 hover:bg-gray-50">
+                       class="px-4 py-2 rounded-lg text-sm font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition">
                         Cancelar
                     </a>
                     <button type="submit"
-                            class="bg-teal-700 hover:bg-teal-800 text-white px-5 py-2 rounded-lg text-sm font-medium">
+                            class="bg-teal-700 hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700 text-white px-5 py-2 rounded-lg text-sm font-medium transition">
                         Agendar
                     </button>
                 </div>

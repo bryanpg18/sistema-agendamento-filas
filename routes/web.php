@@ -3,6 +3,7 @@
 use App\Http\Controllers\AgendamentoController;
 use App\Http\Controllers\AtendimentoController;
 use App\Http\Controllers\ClienteController;
+use App\Http\Controllers\ConfiguracaoController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\ProfileController;
@@ -34,7 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::view('/relatorios', 'relatorios.index')->name('relatorios.index');
 
-    Route::view('/configuracoes', 'configuracoes.index')->name('configuracoes.index');
+    // Configurações
+    Route::get('/configuracoes', [ConfiguracaoController::class, 'index'])->name('configuracoes.index');
+    Route::put('/configuracoes', [ConfiguracaoController::class, 'update'])->name('configuracoes.update');
 
     // Perfil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
