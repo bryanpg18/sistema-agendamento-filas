@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agendamento;
 use App\Models\Cliente;
+use App\Models\Configuracao;
 use App\Models\Servico;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -15,12 +16,6 @@ use Illuminate\View\View;
 
 class AgendamentoController extends Controller
 {
-    private const INICIO_EXPEDIENTE = '08:00';
-
-    private const FIM_EXPEDIENTE = '17:00';
-
-    private const INTERVALO_MINUTOS = 30;
-
     public function index(Request $request): View
     {
         $agendamentos = Agendamento::with(['cliente:id,nome_completo', 'servico:id,nome'])
@@ -46,7 +41,7 @@ class AgendamentoController extends Controller
     {
         return view('agendamentos.create', [
             'clientes' => Cliente::orderBy('nome_completo')->get(),
-            'servicos' => Servico::orderBy('nome')->get(),
+            'servicos' => Servico::where('ativo', true)->orderBy('nome')->get(),
         ]);
     }
 
@@ -65,7 +60,7 @@ class AgendamentoController extends Controller
         return view('agendamentos.edit', [
             'agendamento' => $agendamento,
             'clientes' => Cliente::orderBy('nome_completo')->get(),
-            'servicos' => Servico::orderBy('nome')->get(),
+            'servicos' => Servico::where('ativo', true)->orderBy('nome')->get(),
         ]);
     }
 
@@ -97,6 +92,7 @@ class AgendamentoController extends Controller
         ]);
 
         $data = Carbon::parse($validated['data']);
+        $config = Configuracao::obter();
 
         if ($data->isWeekend()) {
             return response()->json(['horarios' => []]);
@@ -110,8 +106,8 @@ class AgendamentoController extends Controller
             ->all();
 
         $horarios = [];
-        $horaAtual = $data->copy()->setTimeFromTimeString(self::INICIO_EXPEDIENTE);
-        $horaFim = $data->copy()->setTimeFromTimeString(self::FIM_EXPEDIENTE);
+        $horaAtual = $data->copy()->setTimeFromTimeString($config->horario_abertura);
+        $horaFim = $data->copy()->setTimeFromTimeString($config->horario_fechamento);
 
         while ($horaAtual < $horaFim) {
             $hora = $horaAtual->format('H:i');
@@ -120,7 +116,7 @@ class AgendamentoController extends Controller
                 $horarios[] = $hora;
             }
 
-            $horaAtual->addMinutes(self::INTERVALO_MINUTOS);
+            $horaAtual->addMinutes($config->duracao_padrao);
         }
 
         return response()->json(['horarios' => $horarios]);
@@ -132,13 +128,31 @@ class AgendamentoController extends Controller
 
         $validator = Validator::make($data, [
             'cliente_id' => ['required', 'integer', Rule::exists('clientes', 'id')],
-            'servico_id' => ['required', 'integer', Rule::exists('servicos', 'id')],
-            'data' => ['required', 'date'],
+            'servico_id' => ['required', 'integer', Rule::exists('servicos', 'id')->where('ativo', true)],
+            'data' => ['required', 'date', 'after_or_equal:today'],
             'horario' => ['required', 'date_format:H:i'],
             'observacoes' => ['nullable', 'string'],
         ]);
 
         $validator->after(function ($validator) use ($data, $agendamento) {
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
+            $config = Configuracao::obter();
+            $dataAgendamento = Carbon::parse($data['data']);
+            $inicio = $dataAgendamento->copy()->setTimeFromTimeString($config->horario_abertura);
+            $fim = $dataAgendamento->copy()->setTimeFromTimeString($config->horario_fechamento);
+            $horario = $dataAgendamento->copy()->setTimeFromTimeString($data['horario']);
+
+            if ($dataAgendamento->isWeekend()) {
+                $validator->errors()->add('data', 'Não há atendimento aos fins de semana.');
+            }
+
+            if ($horario < $inicio || $horario >= $fim || $inicio->diffInMinutes($horario) % $config->duracao_padrao !== 0) {
+                $validator->errors()->add('horario', 'Selecione um horário disponível dentro do expediente.');
+            }
+
             $horarioOcupado = Agendamento::whereDate('data', $data['data'] ?? null)
                 ->where('status', '!=', 'cancelado')
                 ->when($agendamento, fn ($query) => $query->where('id', '!=', $agendamento->id))

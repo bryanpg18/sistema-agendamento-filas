@@ -64,6 +64,7 @@
                     $navItems = [
                         ['label' => 'Dashboard', 'route' => 'dashboard'],
                         ['label' => 'Clientes', 'route' => 'clientes.index'],
+                        ['label' => 'Serviços', 'route' => 'servicos.index'],
                         ['label' => 'Agendamentos', 'route' => 'agendamentos.index'],
                         ['label' => 'Horários', 'route' => 'horarios.index'],
                         ['label' => 'Atendimentos', 'route' => 'atendimentos.index'],
@@ -95,6 +96,11 @@
             @if (session('sucesso'))
                 <div class="mb-4 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
                     {{ session('sucesso') }}
+                </div>
+            @endif
+            @if (session('erro'))
+                <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-800 dark:bg-rose-950/50 dark:text-rose-300">
+                    {{ session('erro') }}
                 </div>
             @endif
 

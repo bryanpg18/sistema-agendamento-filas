@@ -26,14 +26,14 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                    @forelse ($historico ?? [] as $item)
+                    @forelse ($historico as $item)
                         <tr
-                            x-show="busca === '' || '{{ strtolower($item->cliente) }}'.includes(busca.toLowerCase())"
+                            x-show="busca === '' || @js(strtolower($item->cliente->nome_completo)).includes(busca.toLowerCase())"
                             class="hover:bg-slate-50/50 dark:hover:bg-slate-800/40 transition"
                         >
-                            <td class="px-5 py-3 text-slate-500 dark:text-slate-400">{{ $item->data->format('d/m/Y H:i') }}</td>
-                            <td class="px-5 py-3 text-slate-800 dark:text-slate-200 font-medium">{{ $item->cliente }}</td>
-                            <td class="px-5 py-3 text-slate-500 dark:text-slate-400">{{ $item->servico }}</td>
+                            <td class="px-5 py-3 text-slate-500 dark:text-slate-400">{{ $item->data->format('d/m/Y') }} às {{ substr($item->horario, 0, 5) }}</td>
+                            <td class="px-5 py-3 text-slate-800 dark:text-slate-200 font-medium">{{ $item->cliente->nome_completo }}</td>
+                            <td class="px-5 py-3 text-slate-500 dark:text-slate-400">{{ $item->servico->nome }}</td>
                             <td class="px-5 py-3">
                                 @php
                                     $badge = match ($item->status) {
@@ -58,5 +58,6 @@
             </table>
         </div>
     </div>
+    <div class="mt-4">{{ $historico->links() }}</div>
 </div>
 @endsection

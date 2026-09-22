@@ -47,7 +47,7 @@ class AgendamentoControllerTest extends TestCase
             ->post(route('agendamentos.store'), [
                 'cliente_id' => $cliente->id,
                 'servico_id' => $servico->id,
-                'data' => '2026-09-04',
+                'data' => '2026-10-05',
                 'horario' => '09:00',
                 'observacoes' => 'Primeira visita',
             ])
@@ -69,7 +69,7 @@ class AgendamentoControllerTest extends TestCase
         Agendamento::create([
             'cliente_id' => $cliente->id,
             'servico_id' => $servico->id,
-            'data' => '2026-09-04',
+            'data' => '2026-10-05',
             'horario' => '09:00',
             'status' => 'confirmado',
         ]);
@@ -78,7 +78,7 @@ class AgendamentoControllerTest extends TestCase
             ->post(route('agendamentos.store'), [
                 'cliente_id' => $cliente->id,
                 'servico_id' => $servico->id,
-                'data' => '2026-09-04',
+                'data' => '2026-10-05',
                 'horario' => '09:00',
             ])
             ->assertSessionHasErrors('horario');
@@ -95,7 +95,7 @@ class AgendamentoControllerTest extends TestCase
         Agendamento::create([
             'cliente_id' => $cliente->id,
             'servico_id' => $servico->id,
-            'data' => '2026-09-04',
+            'data' => '2026-10-05',
             'horario' => '09:00',
             'status' => 'cancelado',
         ]);
@@ -104,7 +104,7 @@ class AgendamentoControllerTest extends TestCase
             ->post(route('agendamentos.store'), [
                 'cliente_id' => $cliente->id,
                 'servico_id' => $servico->id,
-                'data' => '2026-09-04',
+                'data' => '2026-10-05',
                 'horario' => '09:00',
             ])
             ->assertRedirect(route('agendamentos.index'))
@@ -122,7 +122,7 @@ class AgendamentoControllerTest extends TestCase
         $agendamento = Agendamento::create([
             'cliente_id' => $cliente->id,
             'servico_id' => $servico->id,
-            'data' => '2026-09-04',
+            'data' => '2026-10-05',
             'horario' => '09:00',
             'status' => 'confirmado',
         ]);
@@ -146,15 +146,15 @@ class AgendamentoControllerTest extends TestCase
         Agendamento::create([
             'cliente_id' => $cliente->id,
             'servico_id' => $servico->id,
-            'data' => '2026-09-04',
+            'data' => '2026-10-05',
             'horario' => '08:00',
             'status' => 'confirmado',
         ]);
 
-        $esperado = $this->horariosEsperados('2026-09-04', ['08:00']);
+        $esperado = $this->horariosEsperados('2026-10-05', ['08:00']);
 
         $this->actingAs($user)
-            ->getJson(route('agendamentos.horarios-disponiveis', ['data' => '2026-09-04']))
+            ->getJson(route('agendamentos.horarios-disponiveis', ['data' => '2026-10-05']))
             ->assertOk()
             ->assertJson(['horarios' => $esperado]);
     }

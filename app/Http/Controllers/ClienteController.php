@@ -60,6 +60,11 @@ class ClienteController extends Controller
 
     public function destroy(Cliente $cliente)
     {
+        if ($cliente->agendamentos()->exists()) {
+            return redirect()->route('clientes.index')
+                ->with('erro', 'Não é possível remover um cliente que possui agendamentos no histórico.');
+        }
+
         $cliente->delete();
 
         return redirect()->route('clientes.index')

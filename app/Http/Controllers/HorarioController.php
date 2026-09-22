@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agendamento;
+use App\Models\Configuracao;
 use App\Models\HorarioDisponivel;
 use App\Models\Servico;
 use Carbon\Carbon;
@@ -51,7 +52,7 @@ class HorarioController extends Controller
             ->when($status, fn ($horarios) => $horarios->where('status_exibicao', $status))
             ->values();
 
-        $servicos = Servico::orderBy('nome')->get();
+        $servicos = Servico::where('ativo', true)->orderBy('nome')->get();
 
         return view('horarios.index', [
             'horarios' => $horarios,
@@ -70,8 +71,9 @@ class HorarioController extends Controller
             return;
         }
 
-        $horaAtual = $dataSelecionada->copy()->setTime(8, 0);
-        $horaFim = $dataSelecionada->copy()->setTime(17, 0);
+        $config = Configuracao::obter();
+        $horaAtual = $dataSelecionada->copy()->setTimeFromTimeString($config->horario_abertura);
+        $horaFim = $dataSelecionada->copy()->setTimeFromTimeString($config->horario_fechamento);
 
         while ($horaAtual < $horaFim) {
             HorarioDisponivel::query()
@@ -83,7 +85,7 @@ class HorarioController extends Controller
                     'status' => 'disponivel',
                 ]);
 
-            $horaAtual->addMinutes(30);
+            $horaAtual->addMinutes($config->duracao_padrao);
         }
     }
 }

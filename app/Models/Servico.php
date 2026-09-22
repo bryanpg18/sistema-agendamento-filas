@@ -13,6 +13,12 @@ class Servico extends Model
         'nome',
         'duracao_minutos',
         'preco',
+        'ativo',
+    ];
+
+    protected $casts = [
+        'preco' => 'decimal:2',
+        'ativo' => 'boolean',
     ];
 
     public function agendamentos()

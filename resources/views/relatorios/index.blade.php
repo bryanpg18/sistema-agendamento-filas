@@ -13,12 +13,12 @@
     <form method="GET" class="flex flex-wrap items-end gap-3 mb-6 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 p-4 shadow-sm transition-colors">
         <div>
             <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">De</label>
-            <input type="date" name="de" value="{{ request('de') }}"
+            <input type="date" name="de" value="{{ $de }}"
                    class="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
         </div>
         <div>
             <label class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Até</label>
-            <input type="date" name="ate" value="{{ request('ate') }}"
+            <input type="date" name="ate" value="{{ $ate }}"
                    class="border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-600">
         </div>
         <button type="submit" class="bg-teal-700 hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition">

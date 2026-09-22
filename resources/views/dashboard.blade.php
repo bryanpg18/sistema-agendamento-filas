@@ -42,8 +42,8 @@
             <div class="space-y-3">
                 @forelse ($proximosAgendamentos ?? [] as $agendamento)
                     <div class="flex items-center gap-3">
-                        <span class="w-12 text-sm text-slate-400 dark:text-slate-500">{{ $agendamento->hora }}</span>
-                        <span class="text-sm text-slate-700 dark:text-slate-200">{{ $agendamento->cliente }}</span>
+                        <span class="w-12 text-sm text-slate-400 dark:text-slate-500">{{ substr($agendamento->horario, 0, 5) }}</span>
+                        <span class="text-sm text-slate-700 dark:text-slate-200">{{ $agendamento->cliente->nome_completo }}</span>
                     </div>
                 @empty
                     <p class="text-sm text-slate-400 dark:text-slate-500">Nenhum agendamento para hoje.</p>

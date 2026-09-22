@@ -23,11 +23,11 @@ class HorarioControllerTest extends TestCase
         $this->actingAs($user)
             ->get(route('horarios.index', ['data' => '2026-09-03']))
             ->assertOk()
-            ->assertViewHas('horarios', fn ($horarios): bool => $horarios->count() === 18)
+            ->assertViewHas('horarios', fn ($horarios): bool => $horarios->count() === 20)
             ->assertSee('08:00')
-            ->assertSee('16:30');
+            ->assertSee('17:30');
 
-        $this->assertDatabaseCount('horarios_disponiveis', 18);
+        $this->assertDatabaseCount('horarios_disponiveis', 20);
     }
 
     public function test_horarios_are_filtered_by_the_status_of_their_agendamentos(): void
