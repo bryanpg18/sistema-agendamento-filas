@@ -45,7 +45,17 @@
                             <td class="px-5 py-3 text-sm text-slate-500 dark:text-slate-400">{{ $agendamento->servico->nome }}</td>
                             <td class="px-5 py-3 text-sm text-slate-500 dark:text-slate-400">{{ $agendamento->data->format('d/m/Y') }}</td>
                             <td class="px-5 py-3 text-sm text-slate-500 dark:text-slate-400">{{ substr($agendamento->horario, 0, 5) }}</td>
-                            <td class="px-5 py-3 text-sm text-slate-700 dark:text-slate-300">{{ ucfirst($agendamento->status) }}</td>
+                            @php
+                                $rotuloStatus = match ($agendamento->status) {
+                                    'confirmado' => 'Confirmado',
+                                    'em_espera' => 'Em espera',
+                                    'em_atendimento' => 'Em atendimento',
+                                    'concluido' => 'Concluído',
+                                    'cancelado' => 'Cancelado',
+                                    default => ucfirst(str_replace('_', ' ', $agendamento->status)),
+                                };
+                            @endphp
+                            <td class="px-5 py-3 text-sm text-slate-700 dark:text-slate-300">{{ $rotuloStatus }}</td>
                             <td class="px-5 py-3 text-sm whitespace-nowrap">
                                 @if($statusAtivo === 'em_espera')
                                     <form method="POST" action="{{ route('atendimentos.iniciar', $agendamento) }}">

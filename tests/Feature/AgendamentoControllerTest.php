@@ -7,12 +7,20 @@ use App\Models\Cliente;
 use App\Models\Servico;
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class AgendamentoControllerTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->travelTo(Carbon::parse('2026-10-01 08:00'));
+    }
 
     public function test_agendamentos_list_page_can_be_rendered(): void
     {
@@ -135,6 +143,42 @@ class AgendamentoControllerTest extends TestCase
             'id' => $agendamento->id,
             'status' => 'cancelado',
         ]);
+    }
+
+    public function test_cliente_com_agendamento_nao_pode_ser_excluido_diretamente_do_banco(): void
+    {
+        $cliente = $this->criarCliente();
+        $servico = $this->criarServico();
+
+        Agendamento::create([
+            'cliente_id' => $cliente->id,
+            'servico_id' => $servico->id,
+            'data' => '2026-10-05',
+            'horario' => '09:00',
+            'status' => 'confirmado',
+        ]);
+
+        $this->expectException(QueryException::class);
+
+        $cliente->delete();
+    }
+
+    public function test_servico_com_agendamento_nao_pode_ser_excluido_diretamente_do_banco(): void
+    {
+        $cliente = $this->criarCliente();
+        $servico = $this->criarServico();
+
+        Agendamento::create([
+            'cliente_id' => $cliente->id,
+            'servico_id' => $servico->id,
+            'data' => '2026-10-05',
+            'horario' => '09:00',
+            'status' => 'confirmado',
+        ]);
+
+        $this->expectException(QueryException::class);
+
+        $servico->delete();
     }
 
     public function test_endpoint_de_horarios_disponiveis_exclui_horarios_ja_ocupados(): void

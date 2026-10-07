@@ -18,7 +18,7 @@ class RelatorioController extends Controller
 
         return view('relatorios.index', [
             'de' => $de, 'ate' => $ate,
-            'totalAtendimentos' => (clone $agendamentos)->where('status', 'concluido')->count(),
+            'totalAtendimentos' => (clone $agendamentos)->where('status', '!=', 'cancelado')->count(),
             'totalConcluidos' => (clone $agendamentos)->where('status', 'concluido')->count(),
             'totalCancelados' => (clone $agendamentos)->where('status', 'cancelado')->count(),
             'novosClientes' => Cliente::whereBetween('created_at', [$de, $ate.' 23:59:59'])->count(),

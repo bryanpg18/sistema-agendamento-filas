@@ -23,6 +23,35 @@ class AtendimentoTest extends TestCase
             ->assertViewIs('atendimentos.index');
     }
 
+    public function test_atendimento_status_is_displayed_as_a_readable_label(): void
+    {
+        $user = User::factory()->create();
+        $cliente = Cliente::create([
+            'nome_completo' => 'Cliente Teste',
+            'cpf' => '12345678901',
+            'telefone' => '11999999999',
+        ]);
+        $servico = Servico::create([
+            'nome' => 'Consulta',
+            'duracao_minutos' => 30,
+            'preco' => 100,
+        ]);
+
+        Agendamento::create([
+            'cliente_id' => $cliente->id,
+            'servico_id' => $servico->id,
+            'data' => '2026-09-18',
+            'horario' => '10:00',
+            'status' => 'em_atendimento',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('atendimentos.index', ['status' => 'em_atendimento']))
+            ->assertOk()
+            ->assertSee('Em atendimento')
+            ->assertDontSee('Em_atendimento');
+    }
+
     public function test_authenticated_user_can_iniciar_atendimento(): void
     {
         $user = User::factory()->create();
