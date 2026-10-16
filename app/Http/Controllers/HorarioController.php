@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agendamento;
+use App\Models\BloqueioAgenda;
 use App\Models\Configuracao;
 use App\Models\HorarioDisponivel;
 use App\Models\Servico;
@@ -18,7 +19,7 @@ class HorarioController extends Controller
         $validated = $request->validate([
             'data' => ['nullable', 'date'],
             'servico_id' => ['nullable', 'integer', Rule::exists('servicos', 'id')],
-            'status' => ['nullable', Rule::in(['disponivel', 'agendado', 'cancelado'])],
+            'status' => ['nullable', Rule::in(['disponivel', 'agendado', 'cancelado', 'bloqueado'])],
         ]);
 
         $data = $validated['data'] ?? now()->toDateString();
@@ -31,15 +32,22 @@ class HorarioController extends Controller
             ->when($servicoId, fn ($query) => $query->where('servico_id', $servicoId))
             ->get()
             ->keyBy(fn ($agendamento) => substr($agendamento->horario, 0, 5));
+        $bloqueios = BloqueioAgenda::whereDate('data', $data)->get();
+        $config = Configuracao::obter();
 
         $horarios = HorarioDisponivel::whereDate('data', $data)
             ->orderBy('horario')
             ->get()
-            ->map(function ($horario) use ($agendamentos) {
+            ->map(function ($horario) use ($agendamentos, $bloqueios, $config) {
                 $horario->hora_formatada = substr($horario->horario, 0, 5);
                 $agendamento = $agendamentos->get($horario->hora_formatada);
+                $inicioHorario = Carbon::parse($horario->data->format('Y-m-d').' '.$horario->hora_formatada);
+                $fimHorario = $inicioHorario->copy()->addMinutes($config->duracao_padrao);
+                $bloqueado = $bloqueios->contains(fn (BloqueioAgenda $bloqueio): bool => $bloqueio->bloqueiaIntervalo($inicioHorario, $fimHorario));
 
-                if (! $agendamento) {
+                if ($bloqueado && ! $agendamento) {
+                    $horario->status_exibicao = 'bloqueado';
+                } elseif (! $agendamento) {
                     $horario->status_exibicao = 'disponivel';
                 } elseif ($agendamento->status === 'cancelado') {
                     $horario->status_exibicao = 'cancelado';

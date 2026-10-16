@@ -80,6 +80,11 @@ class AtendimentoTest extends TestCase
             ->assertSessionHas('success', 'Atendimento iniciado com sucesso.');
 
         $this->assertEquals('em_atendimento', $agendamento->fresh()->status);
+        $this->assertDatabaseHas('agendamento_historicos', [
+            'agendamento_id' => $agendamento->id,
+            'user_id' => $user->id,
+            'acao' => 'iniciado',
+        ]);
     }
 
     public function test_authenticated_user_can_finalizar_atendimento(): void
@@ -110,5 +115,10 @@ class AtendimentoTest extends TestCase
             ->assertSessionHas('success', 'Atendimento finalizado com sucesso.');
 
         $this->assertEquals('concluido', $agendamento->fresh()->status);
+        $this->assertDatabaseHas('agendamento_historicos', [
+            'agendamento_id' => $agendamento->id,
+            'user_id' => $user->id,
+            'acao' => 'concluido',
+        ]);
     }
 }

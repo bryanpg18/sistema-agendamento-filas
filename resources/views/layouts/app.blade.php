@@ -64,14 +64,21 @@
                     $navItems = [
                         ['label' => 'Dashboard', 'route' => 'dashboard'],
                         ['label' => 'Clientes', 'route' => 'clientes.index'],
-                        ['label' => 'Serviços', 'route' => 'servicos.index'],
                         ['label' => 'Agendamentos', 'route' => 'agendamentos.index'],
+                        ['label' => 'Lista de espera', 'route' => 'lista-espera.index'],
                         ['label' => 'Horários', 'route' => 'horarios.index'],
                         ['label' => 'Atendimentos', 'route' => 'atendimentos.index'],
                         ['label' => 'Histórico', 'route' => 'historico.index'],
-                        ['label' => 'Relatórios', 'route' => 'relatorios.index'],
-                        ['label' => 'Configurações', 'route' => 'configuracoes.index'],
                     ];
+                    if (auth()->user()->isAdmin()) {
+                        $navItems = array_merge($navItems, [
+                            ['label' => 'Serviços', 'route' => 'servicos.index'],
+                            ['label' => 'Bloqueios de agenda', 'route' => 'bloqueios-agenda.index'],
+                            ['label' => 'Relatórios', 'route' => 'relatorios.index'],
+                            ['label' => 'Configurações', 'route' => 'configuracoes.index'],
+                            ['label' => 'Perfis de acesso', 'route' => 'usuarios-acesso.index'],
+                        ]);
+                    }
                 @endphp
 
                 @foreach ($navItems as $item)

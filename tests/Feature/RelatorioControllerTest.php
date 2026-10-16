@@ -15,7 +15,7 @@ class RelatorioControllerTest extends TestCase
 
     public function test_authenticated_user_can_view_reports(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($user)
             ->get(route('relatorios.index'))
@@ -25,7 +25,7 @@ class RelatorioControllerTest extends TestCase
 
     public function test_report_counts_non_cancelled_appointments_separately_from_completed_and_cancelled(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
         $cliente = Cliente::create([
             'nome_completo' => 'Cliente de Relatório',
             'cpf' => '12345678901',
@@ -58,5 +58,35 @@ class RelatorioControllerTest extends TestCase
             ->assertViewHas('totalAtendimentos', 3)
             ->assertViewHas('totalConcluidos', 1)
             ->assertViewHas('totalCancelados', 1);
+    }
+
+    public function test_report_uses_appointment_price_snapshot_after_service_price_changes(): void
+    {
+        $user = User::factory()->create(['role' => 'admin']);
+        $cliente = Cliente::create([
+            'nome_completo' => 'Cliente de Histórico',
+            'cpf' => '12345678901',
+            'telefone' => '11999999999',
+        ]);
+        $servico = Servico::create([
+            'nome' => 'Consulta',
+            'duracao_minutos' => 30,
+            'preco' => 50,
+            'ativo' => true,
+        ]);
+        Agendamento::create([
+            'cliente_id' => $cliente->id,
+            'servico_id' => $servico->id,
+            'data' => '2026-10-05',
+            'horario' => '09:00',
+            'status' => 'concluido',
+            'preco_servico' => 50,
+        ]);
+        $servico->update(['preco' => 80]);
+
+        $this->actingAs($user)
+            ->get(route('relatorios.index', ['de' => '2026-10-01', 'ate' => '2026-10-31']))
+            ->assertOk()
+            ->assertViewHas('porServico', fn ($porServico): bool => (float) $porServico->first()->receita === 50.0);
     }
 }

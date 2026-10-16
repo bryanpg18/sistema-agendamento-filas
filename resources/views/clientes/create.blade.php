@@ -52,6 +52,20 @@
                     @error('email') <p class="text-rose-600 text-xs mt-1">{{ $message }}</p> @enderror
                 </div>
 
+                <fieldset class="space-y-3 rounded-lg border border-slate-200 dark:border-slate-700 p-4">
+                    <legend class="px-1 text-sm font-medium text-slate-700 dark:text-slate-200">Notificações do agendamento</legend>
+                    <label class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
+                        <input type="checkbox" name="receber_notificacoes_email" value="1" @checked(old('receber_notificacoes_email'))
+                               class="mt-0.5 rounded border-slate-300 text-teal-700 focus:ring-teal-600">
+                        <span>Aceita receber confirmações e lembretes por e-mail.</span>
+                    </label>
+                    <label class="flex items-start gap-2 text-sm text-slate-600 dark:text-slate-300">
+                        <input type="checkbox" name="receber_notificacoes_whatsapp" value="1" @checked(old('receber_notificacoes_whatsapp'))
+                               class="mt-0.5 rounded border-slate-300 text-teal-700 focus:ring-teal-600">
+                        <span>Aceita receber confirmações e lembretes por WhatsApp.</span>
+                    </label>
+                </fieldset>
+
                 <div>
                     <label class="block text-sm text-slate-600 dark:text-slate-300 mb-1">Data de nascimento</label>
                     <input type="date" name="data_nascimento" value="{{ old('data_nascimento') }}"

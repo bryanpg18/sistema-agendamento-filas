@@ -11,12 +11,26 @@ class ClienteController extends Controller
 {
     public function index(Request $request)
     {
-        $clientes = Cliente::when($request->busca, function ($query, $busca) {
-            $query->where('nome_completo', 'like', "%{$busca}%")
-                ->orWhere('cpf', 'like', "%{$busca}%");
+        $filtros = $request->validate([
+            'busca' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $clientes = Cliente::when($filtros['busca'] ?? null, function ($query, $busca) {
+            $documento = preg_replace('/\D+/', '', $busca) ?? '';
+
+            $query->where(function ($query) use ($busca, $documento) {
+                $query->where('nome_completo', 'like', "%{$busca}%")
+                    ->orWhere('email', 'like', "%{$busca}%");
+
+                if ($documento !== '') {
+                    $query->orWhere('cpf', 'like', "%{$documento}%")
+                        ->orWhere('telefone', 'like', "%{$documento}%");
+                }
+            });
         })
             ->orderBy('nome_completo')
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('clientes.index', compact('clientes'));
     }
@@ -80,8 +94,12 @@ class ClienteController extends Controller
             'email',
             'data_nascimento',
             'observacoes',
+            'receber_notificacoes_email',
+            'receber_notificacoes_whatsapp',
         ]);
 
+        $data['receber_notificacoes_email'] = $request->boolean('receber_notificacoes_email');
+        $data['receber_notificacoes_whatsapp'] = $request->boolean('receber_notificacoes_whatsapp');
         $data['cpf'] = $this->normalizeDigits($data['cpf'] ?? null);
         $data['telefone'] = $this->normalizeDigits($data['telefone'] ?? null);
 
@@ -98,6 +116,8 @@ class ClienteController extends Controller
             'email' => ['nullable', 'email', 'max:255'],
             'data_nascimento' => ['nullable', 'date'],
             'observacoes' => ['nullable', 'string'],
+            'receber_notificacoes_email' => ['boolean'],
+            'receber_notificacoes_whatsapp' => ['boolean'],
         ])->validate();
     }
 

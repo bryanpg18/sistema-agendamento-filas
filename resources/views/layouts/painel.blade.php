@@ -62,12 +62,20 @@
                         ['label' => 'Dashboard', 'route' => 'dashboard'],
                         ['label' => 'Clientes', 'route' => 'clientes.index'],
                         ['label' => 'Agendamentos', 'route' => 'agendamentos.index'],
+                        ['label' => 'Lista de espera', 'route' => 'lista-espera.index'],
                         ['label' => 'Horários', 'route' => 'horarios.index'],
                         ['label' => 'Atendimentos', 'route' => 'atendimentos.index'],
                         ['label' => 'Histórico', 'route' => 'historico.index'],
-                        ['label' => 'Relatórios', 'route' => 'relatorios.index'],
-                        ['label' => 'Configurações', 'route' => 'configuracoes.index'],
                     ];
+                    if (auth()->user()->isAdmin()) {
+                        $links = array_merge($links, [
+                            ['label' => 'Serviços', 'route' => 'servicos.index'],
+                            ['label' => 'Bloqueios de agenda', 'route' => 'bloqueios-agenda.index'],
+                            ['label' => 'Relatórios', 'route' => 'relatorios.index'],
+                            ['label' => 'Configurações', 'route' => 'configuracoes.index'],
+                            ['label' => 'Perfis de acesso', 'route' => 'usuarios-acesso.index'],
+                        ]);
+                    }
                 @endphp
                 @foreach ($links as $link)
                     @php $active = Route::has($link['route']) && request()->routeIs($link['route'].'*'); @endphp

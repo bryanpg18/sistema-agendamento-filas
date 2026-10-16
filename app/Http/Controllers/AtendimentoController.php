@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agendamento;
+use App\Notifications\AgendamentoNotificacao;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -54,6 +55,8 @@ class AtendimentoController extends Controller
         abort_unless($agendamento->status === 'em_atendimento', 404);
 
         $agendamento->update(['status' => 'concluido']);
+        $agendamento->loadMissing('cliente');
+        $agendamento->cliente->notify(new AgendamentoNotificacao($agendamento, 'concluido'));
 
         return redirect()->route('atendimentos.index', ['status' => 'concluido'])
             ->with('success', 'Atendimento finalizado com sucesso.');

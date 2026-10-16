@@ -19,7 +19,7 @@ class ServicoControllerTest extends TestCase
 
     public function test_authenticated_user_can_create_a_service(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($user)
             ->post(route('servicos.store'), [
@@ -41,7 +41,7 @@ class ServicoControllerTest extends TestCase
 
     public function test_service_requires_name_and_duration(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $this->actingAs($user)
             ->from(route('servicos.create'))
@@ -59,7 +59,7 @@ class ServicoControllerTest extends TestCase
 
     public function test_authenticated_user_can_deactivate_a_service(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
         $servico = Servico::create([
             'nome' => 'Consulta',
             'duracao_minutos' => 60,

@@ -20,9 +20,12 @@
             type="text"
             name="busca"
             value="{{ request('busca') }}"
-            placeholder="Buscar por nome ou CPF..."
+            placeholder="Buscar por nome, CPF, telefone ou e-mail..."
             class="w-72 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800"
         >
+        @if (request('busca'))
+            <a href="{{ route('clientes.index') }}" class="ml-2 text-sm text-slate-500 dark:text-slate-400 hover:underline">Limpar busca</a>
+        @endif
     </form>
 
     <div class="overflow-hidden rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm transition-colors">
@@ -54,12 +57,14 @@
                             </td>
                             <td class="px-5 py-3 whitespace-nowrap">
                                 <a href="{{ route('clientes.edit', $cliente) }}" class="mr-3 text-teal-700 dark:text-teal-400 hover:underline">Editar</a>
-                                <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="inline"
-                                      onsubmit="return confirm('Remover este cliente?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="text-rose-500 hover:underline">Remover</button>
-                                </form>
+                                @if (auth()->user()->isAdmin())
+                                    <form action="{{ route('clientes.destroy', $cliente) }}" method="POST" class="inline"
+                                          onsubmit="return confirm('Remover este cliente?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-rose-500 hover:underline">Remover</button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @empty

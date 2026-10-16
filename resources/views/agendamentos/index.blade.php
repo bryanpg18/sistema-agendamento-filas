@@ -21,19 +21,38 @@
             <input
                 type="text"
                 name="busca"
-                value="{{ $buscaSelecionada }}"
-                placeholder="Buscar por nome do cliente..."
+                value="{{ $filtros['busca'] ?? '' }}"
+                placeholder="Nome, CPF, telefone ou e-mail..."
                 class="w-64 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800"
             >
         </div>
         <div>
-            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Data</label>
+            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Data específica</label>
             <input
                 type="date"
                 name="data"
-                value="{{ $dataSelecionada }}"
+                value="{{ $filtros['data'] ?? '' }}"
                 class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800"
             >
+        </div>
+        <div>
+            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">De</label>
+            <input type="date" name="data_inicio" value="{{ $filtros['data_inicio'] ?? '' }}"
+                class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800">
+        </div>
+        <div>
+            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Até</label>
+            <input type="date" name="data_fim" value="{{ $filtros['data_fim'] ?? '' }}"
+                class="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800">
+        </div>
+        <div>
+            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Serviço</label>
+            <select name="servico_id" class="min-w-[160px] rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800">
+                <option value="">Todos</option>
+                @foreach ($servicos as $servico)
+                    <option value="{{ $servico->id }}" @selected((string) ($filtros['servico_id'] ?? '') === (string) $servico->id)>{{ $servico->nome }}</option>
+                @endforeach
+            </select>
         </div>
         <div>
             <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
@@ -43,11 +62,11 @@
                     class="min-w-[160px] appearance-none rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 py-2 pl-3 pr-9 text-sm focus:outline-none focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800"
                 >
                     <option value="">Todos</option>
-                    <option value="confirmado" @selected($statusSelecionado === 'confirmado')>Confirmado</option>
-                    <option value="em_espera" @selected($statusSelecionado === 'em_espera')>Em espera</option>
-                    <option value="em_atendimento" @selected($statusSelecionado === 'em_atendimento')>Em atendimento</option>
-                    <option value="concluido" @selected($statusSelecionado === 'concluido')>Concluído</option>
-                    <option value="cancelado" @selected($statusSelecionado === 'cancelado')>Cancelado</option>
+                    <option value="confirmado" @selected(($filtros['status'] ?? '') === 'confirmado')>Confirmado</option>
+                    <option value="em_espera" @selected(($filtros['status'] ?? '') === 'em_espera')>Em espera</option>
+                    <option value="em_atendimento" @selected(($filtros['status'] ?? '') === 'em_atendimento')>Em atendimento</option>
+                    <option value="concluido" @selected(($filtros['status'] ?? '') === 'concluido')>Concluído</option>
+                    <option value="cancelado" @selected(($filtros['status'] ?? '') === 'cancelado')>Cancelado</option>
                 </select>
                 <svg class="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -57,7 +76,7 @@
         <button type="submit" class="rounded-lg bg-teal-700 hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700 px-5 py-2.5 text-sm font-medium text-white transition">
             Buscar
         </button>
-        @if ($buscaSelecionada || $dataSelecionada || $statusSelecionado)
+        @if (collect($filtros)->filter()->isNotEmpty())
             <a href="{{ route('agendamentos.index') }}" class="pb-2.5 text-sm text-slate-500 dark:text-slate-400 hover:underline">
                 Limpar filtros
             </a>

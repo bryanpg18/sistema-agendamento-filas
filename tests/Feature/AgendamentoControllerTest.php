@@ -65,6 +65,86 @@ class AgendamentoControllerTest extends TestCase
             'cliente_id' => $cliente->id,
             'servico_id' => $servico->id,
             'status' => 'confirmado',
+            'preco_servico' => 50,
+        ]);
+        $this->assertDatabaseHas('agendamento_historicos', [
+            'agendamento_id' => Agendamento::where('cliente_id', $cliente->id)->firstOrFail()->id,
+            'user_id' => $user->id,
+            'acao' => 'criado',
+        ]);
+    }
+
+    public function test_editar_agendamento_preserva_preco_se_servico_nao_mudar(): void
+    {
+        $user = User::factory()->create();
+        $cliente = $this->criarCliente();
+        $servico = $this->criarServico();
+        $agendamento = Agendamento::create([
+            'cliente_id' => $cliente->id,
+            'servico_id' => $servico->id,
+            'data' => '2026-10-05',
+            'horario' => '09:00',
+            'status' => 'confirmado',
+            'preco_servico' => 50,
+        ]);
+        $servico->update(['preco' => 80]);
+
+        $this->actingAs($user)
+            ->put(route('agendamentos.update', $agendamento), [
+                'cliente_id' => $cliente->id,
+                'servico_id' => $servico->id,
+                'data' => '2026-10-05',
+                'horario' => '09:30',
+            ])
+            ->assertRedirect(route('agendamentos.index'));
+
+        $this->assertDatabaseHas('agendamentos', [
+            'id' => $agendamento->id,
+            'preco_servico' => 50,
+        ]);
+        $this->assertDatabaseHas('agendamento_historicos', [
+            'agendamento_id' => $agendamento->id,
+            'user_id' => $user->id,
+            'acao' => 'editado',
+        ]);
+        $historico = $agendamento->historicos()->where('acao', 'editado')->firstOrFail();
+        $this->assertSame('09:00', $historico->alteracoes['horario']['de']);
+        $this->assertSame('09:30', $historico->alteracoes['horario']['para']);
+    }
+
+    public function test_trocar_servico_atualiza_preco_registrado_no_agendamento(): void
+    {
+        $user = User::factory()->create();
+        $cliente = $this->criarCliente();
+        $servicoOriginal = $this->criarServico();
+        $novoServico = Servico::create([
+            'nome' => 'Barba',
+            'duracao_minutos' => 30,
+            'preco' => 75,
+            'ativo' => true,
+        ]);
+        $agendamento = Agendamento::create([
+            'cliente_id' => $cliente->id,
+            'servico_id' => $servicoOriginal->id,
+            'data' => '2026-10-05',
+            'horario' => '09:00',
+            'status' => 'confirmado',
+            'preco_servico' => 50,
+        ]);
+
+        $this->actingAs($user)
+            ->put(route('agendamentos.update', $agendamento), [
+                'cliente_id' => $cliente->id,
+                'servico_id' => $novoServico->id,
+                'data' => '2026-10-05',
+                'horario' => '09:00',
+            ])
+            ->assertRedirect(route('agendamentos.index'));
+
+        $this->assertDatabaseHas('agendamentos', [
+            'id' => $agendamento->id,
+            'servico_id' => $novoServico->id,
+            'preco_servico' => 75,
         ]);
     }
 
@@ -142,6 +222,11 @@ class AgendamentoControllerTest extends TestCase
         $this->assertDatabaseHas('agendamentos', [
             'id' => $agendamento->id,
             'status' => 'cancelado',
+        ]);
+        $this->assertDatabaseHas('agendamento_historicos', [
+            'agendamento_id' => $agendamento->id,
+            'user_id' => $user->id,
+            'acao' => 'cancelado',
         ]);
     }
 

@@ -49,6 +49,7 @@
                     <option value="disponivel" @selected($statusSelecionado === 'disponivel')>Disponível</option>
                     <option value="agendado" @selected($statusSelecionado === 'agendado')>Agendado</option>
                     <option value="cancelado" @selected($statusSelecionado === 'cancelado')>Cancelado</option>
+                    <option value="bloqueado" @selected($statusSelecionado === 'bloqueado')>Bloqueado</option>
                 </select>
                 <svg class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
@@ -64,6 +65,7 @@
         <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded-full bg-teal-400"></span> Disponível</span>
         <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded-full bg-amber-400"></span> Agendado</span>
         <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded-full bg-rose-400"></span> Cancelado</span>
+        <span class="flex items-center gap-1.5"><span class="h-3 w-3 rounded-full bg-violet-400"></span> Bloqueado</span>
     </div>
 
     <div class="rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-sm transition-colors">
@@ -80,6 +82,7 @@
                             'disponivel' => 'border-teal-200 dark:border-teal-800/80 bg-teal-50/80 dark:bg-teal-950/40 text-teal-800 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/60 cursor-pointer',
                             'agendado' => 'border-amber-200 dark:border-amber-800/80 bg-amber-50/80 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 cursor-not-allowed',
                             'cancelado' => 'border-rose-200 dark:border-rose-800/80 bg-rose-50/80 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 cursor-not-allowed',
+                            'bloqueado' => 'border-violet-200 dark:border-violet-800/80 bg-violet-50/80 dark:bg-violet-950/40 text-violet-700 dark:text-violet-300 cursor-not-allowed',
                         };
                     @endphp
                     <div

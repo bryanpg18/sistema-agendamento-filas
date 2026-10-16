@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -47,6 +48,12 @@ class ProfileController extends Controller
         ]);
 
         $user = $request->user();
+
+        if ($user->isAdmin() && User::where('role', 'admin')->whereKeyNot($user->getKey())->doesntExist()) {
+            return Redirect::back()->withErrors([
+                'password' => 'O último administrador não pode excluir a própria conta.',
+            ], 'userDeletion');
+        }
 
         Auth::logout();
 

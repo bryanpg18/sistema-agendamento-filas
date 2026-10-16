@@ -9,3 +9,7 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('horarios:gerar 7')->daily();
+Schedule::command('agendamentos:enviar-lembretes')
+    ->everyMinute()
+    ->timezone(config('services.appointment_notifications.timezone'))
+    ->withoutOverlapping();

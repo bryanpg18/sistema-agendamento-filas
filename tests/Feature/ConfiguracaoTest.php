@@ -34,7 +34,7 @@ class ConfiguracaoTest extends TestCase
 
     public function test_authenticated_user_can_view_configuracoes_screen(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         Configuracao::create([
             'nome_estabelecimento' => 'Barbearia Central',
@@ -58,7 +58,7 @@ class ConfiguracaoTest extends TestCase
 
     public function test_authenticated_user_can_update_configuracoes(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($user)->put(route('configuracoes.update'), [
             'nome_estabelecimento' => 'Clínica Saúde',
@@ -84,7 +84,7 @@ class ConfiguracaoTest extends TestCase
 
     public function test_validation_rules_require_mandatory_fields(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['role' => 'admin']);
 
         $response = $this->actingAs($user)->from(route('configuracoes.index'))->put(route('configuracoes.update'), [
             'nome_estabelecimento' => '',

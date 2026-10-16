@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Agendamento extends Model
 {
@@ -16,10 +17,13 @@ class Agendamento extends Model
         'horario',
         'status',
         'observacoes',
+        'preco_servico',
     ];
 
     protected $casts = [
         'data' => 'date',
+        'preco_servico' => 'decimal:2',
+        'lembrete_enviado_em' => 'datetime',
     ];
 
     public function cliente()
@@ -30,5 +34,10 @@ class Agendamento extends Model
     public function servico()
     {
         return $this->belongsTo(Servico::class);
+    }
+
+    public function historicos(): HasMany
+    {
+        return $this->hasMany(AgendamentoHistorico::class);
     }
 }

@@ -59,5 +59,88 @@
         </div>
     </div>
     <div class="mt-4">{{ $historico->links() }}</div>
+
+    <div class="mt-10 mb-4">
+        <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Alterações dos agendamentos</h2>
+        <p class="text-sm text-slate-500 dark:text-slate-400">Ações realizadas, responsáveis e detalhes das mudanças</p>
+    </div>
+
+    <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800 overflow-hidden shadow-sm transition-colors">
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="bg-slate-50 dark:bg-slate-800/60 text-left text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800">
+                        <th class="px-5 py-3 font-medium">Quando</th>
+                        <th class="px-5 py-3 font-medium">Cliente</th>
+                        <th class="px-5 py-3 font-medium">Ação</th>
+                        <th class="px-5 py-3 font-medium">Responsável</th>
+                        <th class="px-5 py-3 font-medium">Alterações</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                    @forelse ($alteracoes as $alteracao)
+                        <tr class="align-top">
+                            <td class="px-5 py-3 whitespace-nowrap text-slate-500 dark:text-slate-400">{{ $alteracao->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="px-5 py-3 text-slate-800 dark:text-slate-200">{{ $alteracao->agendamento->cliente->nome_completo }}</td>
+                            <td class="px-5 py-3 text-slate-800 dark:text-slate-200">
+                                {{ match ($alteracao->acao) {
+                                    'criado' => 'Criado',
+                                    'editado' => 'Editado',
+                                    'iniciado' => 'Atendimento iniciado',
+                                    'concluido' => 'Concluído',
+                                    'cancelado' => 'Cancelado',
+                                    default => ucfirst($alteracao->acao),
+                                } }}
+                            </td>
+                            <td class="px-5 py-3 text-slate-500 dark:text-slate-400">{{ $alteracao->usuario?->name ?? 'Sistema' }}</td>
+                            <td class="px-5 py-3 text-slate-500 dark:text-slate-400">
+                                @php
+                                    $nomesDosCampos = [
+                                        'cliente_id' => 'Cliente',
+                                        'servico_id' => 'Serviço',
+                                        'data' => 'Data',
+                                        'horario' => 'Horário',
+                                        'status' => 'Status',
+                                        'observacoes' => 'Observações',
+                                        'preco_servico' => 'Preço',
+                                    ];
+                                    $nomesDosStatus = [
+                                        'confirmado' => 'Confirmado',
+                                        'em_espera' => 'Em espera',
+                                        'em_atendimento' => 'Em atendimento',
+                                        'concluido' => 'Concluído',
+                                        'cancelado' => 'Cancelado',
+                                    ];
+                                @endphp
+                                <ul class="space-y-1">
+                                    @foreach ($alteracao->alteracoes ?? [] as $campo => $valores)
+                                        @php
+                                            $valorAnterior = $valores['de'] ?? '—';
+                                            $valorNovo = $valores['para'] ?? '—';
+                                            if ($campo === 'status') {
+                                                $valorAnterior = $nomesDosStatus[$valorAnterior] ?? $valorAnterior;
+                                                $valorNovo = $nomesDosStatus[$valorNovo] ?? $valorNovo;
+                                            } elseif (in_array($campo, ['cliente_id', 'servico_id'], true)) {
+                                                $valorAnterior = $valorAnterior === '—' ? $valorAnterior : '#'.$valorAnterior;
+                                                $valorNovo = $valorNovo === '—' ? $valorNovo : '#'.$valorNovo;
+                                            }
+                                        @endphp
+                                        <li><span class="font-medium">{{ $nomesDosCampos[$campo] ?? $campo }}:</span> {{ $valorAnterior }} → {{ $valorNovo }}</li>
+                                    @endforeach
+                                </ul>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-5 py-10 text-center text-slate-400 dark:text-slate-500">
+                                Nenhuma alteração registrada ainda.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="mt-4">{{ $alteracoes->links() }}</div>
 </div>
 @endsection

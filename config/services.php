@@ -35,4 +35,17 @@ return [
         ],
     ],
 
+    'whatsapp' => [
+        'access_token' => env('WHATSAPP_ACCESS_TOKEN'),
+        'phone_number_id' => env('WHATSAPP_PHONE_NUMBER_ID'),
+        'graph_version' => env('WHATSAPP_GRAPH_VERSION', 'v26.0'),
+        'template_name' => env('WHATSAPP_TEMPLATE_NAME', 'agendamento_aviso'),
+        'template_language' => env('WHATSAPP_TEMPLATE_LANGUAGE', 'pt_BR'),
+        'country_code' => env('WHATSAPP_COUNTRY_CODE', '55'),
+    ],
+
+    'appointment_notifications' => [
+        'timezone' => env('APPOINTMENT_TIMEZONE', 'America/Sao_Paulo'),
+    ],
+
 ];

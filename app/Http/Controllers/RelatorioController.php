@@ -22,7 +22,7 @@ class RelatorioController extends Controller
             'totalConcluidos' => (clone $agendamentos)->where('status', 'concluido')->count(),
             'totalCancelados' => (clone $agendamentos)->where('status', 'cancelado')->count(),
             'novosClientes' => Cliente::whereBetween('created_at', [$de, $ate.' 23:59:59'])->count(),
-            'porServico' => (clone $agendamentos)->where('agendamentos.status', 'concluido')->join('servicos', 'servicos.id', '=', 'agendamentos.servico_id')->selectRaw('servicos.nome as servico, count(*) as total, coalesce(sum(servicos.preco), 0) as receita')->groupBy('servicos.id', 'servicos.nome')->orderBy('servicos.nome')->get(),
+            'porServico' => (clone $agendamentos)->where('agendamentos.status', 'concluido')->join('servicos', 'servicos.id', '=', 'agendamentos.servico_id')->selectRaw('servicos.nome as servico, count(*) as total, coalesce(sum(agendamentos.preco_servico), 0) as receita')->groupBy('servicos.id', 'servicos.nome')->orderBy('servicos.nome')->get(),
         ]);
     }
 }

@@ -36,12 +36,20 @@ Em desenvolvimento, `npm run dev` mantém o Vite ativo para atualizar os assets.
 
 - Cadastro e consulta de clientes, com validação e normalização de CPF e telefone.
 - Cadastro de serviços e configuração do expediente e da duração padrão dos horários.
+- Bloqueios de agenda por intervalo ou dia inteiro, inclusive em períodos de vários dias.
 - Criação, edição, cancelamento e consulta de agendamentos.
 - Painel de atendimento com fila, início e conclusão dos atendimentos.
 - Histórico, indicadores do dashboard e relatórios por período e serviço.
+- Perfis de acesso de administrador e atendente.
 - Autenticação, verificação de e-mail e gerenciamento de perfil.
 
-O painel exige autenticação e verificação de e-mail. Cadastre um usuário pela tela de registro para acessar o sistema.
+O painel exige autenticação e verificação de e-mail. Novos usuários começam como atendentes. Para promover o primeiro administrador, cadastre e verifique a conta e execute:
+
+```bash
+php artisan users:make-admin usuario@example.com
+```
+
+Administradores podem alterar os perfis na tela **Perfis de acesso**. Atendentes usam o fluxo diário de clientes, agendamentos e atendimento.
 
 ## Testes
 

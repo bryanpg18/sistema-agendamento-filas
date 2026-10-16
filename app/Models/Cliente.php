@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Cliente extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'nome_completo',
@@ -17,15 +18,24 @@ class Cliente extends Model
         'email',
         'data_nascimento',
         'observacoes',
+        'receber_notificacoes_email',
+        'receber_notificacoes_whatsapp',
     ];
 
     protected $casts = [
         'data_nascimento' => 'date',
+        'receber_notificacoes_email' => 'boolean',
+        'receber_notificacoes_whatsapp' => 'boolean',
     ];
 
     public function agendamentos()
     {
         return $this->hasMany(Agendamento::class);
+    }
+
+    public function listasDeEspera()
+    {
+        return $this->hasMany(ListaEspera::class);
     }
 
     protected function cpfFormatado(): Attribute
@@ -57,5 +67,10 @@ class Cliente extends Model
                 return $this->telefone;
             }
         );
+    }
+
+    public function routeNotificationForWhatsApp(): ?string
+    {
+        return $this->telefone;
     }
 }
