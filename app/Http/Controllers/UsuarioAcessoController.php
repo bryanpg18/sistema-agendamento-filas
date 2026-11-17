@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
@@ -65,5 +66,42 @@ class UsuarioAcessoController extends Controller
 
         return redirect()->route('usuarios-acesso.index')
             ->with('sucesso', 'Perfil de acesso atualizado.');
+    }
+
+    public function destroy(Request $request, User $user): RedirectResponse
+    {
+        if ($request->user()->is($user)) {
+            return back()->withErrors([
+                'usuario' => 'Você não pode excluir a própria conta.',
+            ]);
+        }
+
+        $erroExclusao = DB::transaction(function () use ($user): ?string {
+            $administradores = User::query()
+                ->where('role', 'admin')
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->pluck('id');
+
+            $usuario = User::query()
+                ->lockForUpdate()
+                ->findOrFail($user->getKey());
+
+            if ($usuario->isAdmin() && $administradores->count() <= 1) {
+                return 'O sistema precisa manter pelo menos um administrador.';
+            }
+
+            DB::table('sessions')->where('user_id', $usuario->getKey())->delete();
+            $usuario->delete();
+
+            return null;
+        });
+
+        if ($erroExclusao !== null) {
+            return back()->withErrors(['usuario' => $erroExclusao]);
+        }
+
+        return redirect()->route('usuarios-acesso.index')
+            ->with('sucesso', 'Usuário excluído. O histórico de ações foi mantido.');
     }
 }

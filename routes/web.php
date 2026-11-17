@@ -50,7 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->only(['index', 'store', 'destroy']);
         Route::resource('usuarios-acesso', UsuarioAcessoController::class)
             ->parameters(['usuarios-acesso' => 'user'])
-            ->only(['index', 'store', 'update']);
+            ->only(['index', 'store', 'update', 'destroy']);
         Route::get('/relatorios', [RelatorioController::class, 'index'])->name('relatorios.index');
         Route::get('/configuracoes', [ConfiguracaoController::class, 'index'])->name('configuracoes.index');
         Route::put('/configuracoes', [ConfiguracaoController::class, 'update'])->name('configuracoes.update');

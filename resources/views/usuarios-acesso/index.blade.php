@@ -98,10 +98,23 @@
                                 </form>
                             </td>
                             <td class="px-5 py-3 text-right">
-                                <button type="submit" form="perfil-{{ $usuario->id }}"
-                                        class="rounded-lg bg-teal-700 px-3 py-2 text-xs font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700">
-                                    Salvar
-                                </button>
+                                <div class="flex justify-end gap-2">
+                                    <button type="submit" form="perfil-{{ $usuario->id }}"
+                                            class="rounded-lg bg-teal-700 px-3 py-2 text-xs font-medium text-white transition hover:bg-teal-800 dark:bg-teal-600 dark:hover:bg-teal-700">
+                                        Salvar
+                                    </button>
+                                    @if (auth()->id() !== $usuario->id)
+                                        <form method="POST" action="{{ route('usuarios-acesso.destroy', $usuario) }}"
+                                              onsubmit="return confirm('Tem certeza de que deseja excluir este usuário?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                    class="rounded-lg bg-rose-600 px-3 py-2 text-xs font-medium text-white transition hover:bg-rose-700">
+                                                Excluir
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
