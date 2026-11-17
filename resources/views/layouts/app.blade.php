@@ -17,8 +17,36 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 antialiased transition-colors duration-150">
-    <div class="flex min-h-screen">
-        <aside class="w-64 min-h-screen shrink-0 border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 flex flex-col transition-colors duration-150">
+    <div class="min-h-screen md:flex" x-data="{ mobileNavigationOpen: false }" @keydown.escape.window="mobileNavigationOpen = false">
+        <header class="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-900 md:hidden">
+            <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-700 text-sm font-semibold text-white shadow-sm dark:bg-teal-600">F</div>
+                <div>
+                    <p class="text-sm font-semibold text-slate-900 dark:text-white">Fila & Agenda</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Gestão de filas e horários</p>
+                </div>
+            </div>
+
+            <button type="button"
+                    class="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                    aria-label="Abrir menu de navegação"
+                    :aria-expanded="mobileNavigationOpen.toString()"
+                    @click="mobileNavigationOpen = !mobileNavigationOpen">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </header>
+
+        <div x-show="mobileNavigationOpen"
+             x-transition.opacity
+             class="fixed inset-0 z-40 bg-slate-950/50 md:hidden"
+             style="display: none;"
+             aria-hidden="true"
+             @click="mobileNavigationOpen = false"></div>
+
+        <aside :class="mobileNavigationOpen ? 'translate-x-0' : '-translate-x-full'"
+               class="fixed inset-y-0 left-0 z-50 flex min-h-screen w-64 max-w-[85vw] shrink-0 flex-col border-r border-slate-200 bg-white transition-transform duration-200 dark:border-slate-800 dark:bg-slate-900 md:sticky md:top-0 md:z-auto md:translate-x-0">
             <div class="flex items-center gap-3 border-b border-slate-100 dark:border-slate-800 px-5 py-5">
                 <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-teal-700 dark:bg-teal-600 text-sm font-semibold text-white shadow-sm">F</div>
                 <div>
@@ -83,6 +111,7 @@
 
                 @foreach ($navItems as $item)
                     <a href="{{ Route::has($item['route']) ? route($item['route']) : '#' }}"
+                       @click="mobileNavigationOpen = false"
                        class="flex w-full items-center rounded-lg px-3 py-2.5 text-sm transition-colors {{ request()->routeIs($item['route']) ? 'bg-teal-50 dark:bg-teal-950/60 font-medium text-teal-700 dark:text-teal-400' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white' }}">
                         {{ $item['label'] }}
                     </a>
@@ -99,7 +128,7 @@
             </div>
         </aside>
 
-        <main class="flex-1 p-6 md:p-8 overflow-x-hidden">
+        <main class="min-w-0 flex-1 overflow-x-hidden p-4 sm:p-6 md:p-8">
             @if (session('sucesso'))
                 <div class="mb-4 rounded-xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-950/50 px-4 py-3 text-sm text-emerald-700 dark:text-emerald-300">
                     {{ session('sucesso') }}
